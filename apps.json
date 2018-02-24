@@ -1,0 +1,17 @@
+[
+  {
+    "name": "npp",
+    "url": "https://notepad-plus-plus.org/repository/7.x/7.3.3/npp.7.3.3.bin.7z",
+    "exe": "notepad++.exe"
+  },
+  {
+    "name": "cmder",
+    "url": "https://github.com/cmderdev/cmder/releases/download/v1.3.2/cmder_mini.zip",
+    "exe": "Cmder.exe"
+  },
+  {
+    "name": "conemu",
+    "url": "https://download.fosshub.com/Protected/expiretime=1505627176;badurl=aHR0cDovL3d3dy5mb3NzaHViLmNvbS9Db25FbXUuaHRtbA==/2e76bbb1fa88c2890053ce69ce5a190506c546d003e22212448f9362294cebd0/ConEmu/ConEmuPack.161206.7z",
+    "exe": "ConEmu64.exe"
+  }
+]

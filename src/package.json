@@ -1,0 +1,23 @@
+{
+  "name": "my-env",
+  "version": "1.0.0",
+  "description": "",
+  "main": "install.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oricalvo/myenv.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/oricalvo/myenv/issues"
+  },
+  "homepage": "https://github.com/oricalvo/myenv#readme",
+  "dependencies": {
+    "adm-zip": "^0.4.7"
+  },
+  "devDependencies": {}
+}
