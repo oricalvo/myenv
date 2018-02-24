@@ -52,7 +52,7 @@ function confirm() {
 async function install() {
     const temp = path.resolve(__dirname, "../temp/npp.zip");
 
-    await downloadTo("https://github.com/oricalvo/myenv-packages/raw/master/npp.zip", temp);
+    await downloadTo("https://raw.githubusercontent.com/oricalvo/myenv-packages/master/npp.zip", temp);
 
     unzipTo(temp, binDir);
 }

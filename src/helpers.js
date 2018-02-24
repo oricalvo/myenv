@@ -1,6 +1,7 @@
 const path = require("path");
-const request = require("request");
 const fs = require("fs");
+const http = require("http");
+const https = require("https");
 const readline = require("readline");
 const child_process = require("child_process");
 const AdmZip = require('adm-zip');
@@ -9,22 +10,19 @@ function downloadTo(url, dest) {
     return new Promise((resolve,reject)=> {
         const filePath = path.resolve(path.isAbsolute(dest) ? dest : path.join(process.cwd(), dest));
         const writeStream = fs.createWriteStream(filePath);
-				
+
         let contentLength = 0;
         let read = 0;
 
-		console.log("Connecting to " + url + " and saving to " + filePath);
-		
-        const http = request(url)
-            .on("error", function(err) {
-                reject(err);
-                console.log();
-            })
-            .on('response', function(response) {
-                contentLength = response.headers['content-length'];
-            })
-            .on("data", function(buffer) {
-                if(read ==0){
+        console.log("Connecting to " + url + " and saving to " + filePath);
+
+        const h = url.startsWith("https") ? https : http;
+
+        h.get(url, function (res) {
+            contentLength = res.headers['content-length'];
+
+            res.on("data", function (buffer) {
+                if (read == 0) {
                     process.stdout.write("Downloading ");
                 }
 
@@ -32,18 +30,18 @@ function downloadTo(url, dest) {
                 readline.cursorTo(process.stdout, "Downloading ".length, null);
                 //readline.clearLine(process.stdout);
                 process.stdout.write(Math.round(read * 100 / contentLength) + "%");
-            });
-			
-        http.pipe(writeStream)
-            .on("error", function(err) {
-				http.abort();
-                reject(err);				
-            })
-            .on("finish", function() {
-				resolve();
-
-                console.log();
-            });
+            }).on("error", function(err){
+                reject(err);
+            }).pipe(writeStream)
+                .on("error", function (err) {
+                    res.abort();
+                    reject(err);
+                })
+                .on("finish", function () {
+                    resolve();
+                    console.log();
+                });
+        });
     });
 }
 

@@ -1,1 +1,3 @@
-%~dp0..\bin\npp\notepad++.exe" %1 %2 %3
+@echo off
+
+node %~dp0../src/npp.js %1
