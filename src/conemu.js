@@ -61,11 +61,13 @@ async function install() {
     unzipTo(temp, binDir);
 }
 
-function run() {
+async function run() {
     console.log(`Running ${appName} from ${appExeFilePath}`);
 
     const args = process.argv.slice(2);
-    return spawn(appExeFilePath, args, {
+    const p = await spawn(appExeFilePath, args, {
         detached: true,
     });
+	
+	p.unref();
 }

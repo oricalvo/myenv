@@ -62,8 +62,11 @@ async function install() {
 function run() {
     console.log("Running Github desktop from " + githubExe);
 
-    return spawn(githubExe, [process.cwd()], {
+    const p = spawn(githubExe, [process.cwd()], {
         detached: true,
     });
+	
+	p.unref();
+	
+	return p;
 }
-

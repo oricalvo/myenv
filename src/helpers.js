@@ -220,7 +220,7 @@ function promisifyNodeFn2(func) {
 
 function spawn(command, args, overrideOptions) {
     const options = {
-        stdio: "inherit",
+        stdio: "ignore",
     };
 
     if (!args) {
