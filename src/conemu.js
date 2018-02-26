@@ -67,6 +67,7 @@ async function run() {
     const args = process.argv.slice(2);
     const p = await spawn(appExeFilePath, args, {
         detached: true,
+        stdio: "ignore",
     });
 	
 	p.unref();

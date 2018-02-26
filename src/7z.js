@@ -1,8 +1,10 @@
 const path = require("path");
-const {downloadTo, fileExists, spawn} = require("./helpers");
+const {downloadTo, directoryExists, spawn, unzipTo} = require("./helpers");
 const readline = require('readline');
 
-const githubExe = path.resolve(process.env.APPDATA, "../Local/GitHubDesktop/GitHubDesktop.exe");
+const binDir = path.resolve(__dirname, "../bin");
+const nppDir = path.resolve(__dirname, "../bin/7z");
+const nppExe = path.resolve(__dirname, "../bin/7z/7z.exe");
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -35,12 +37,12 @@ async function main() {
 }
 
 async function installed() {
-    return await fileExists(githubExe);
+    return await directoryExists(nppDir);
 }
 
 function confirm() {
     return new Promise((resolve, reject)=> {
-        rl.question('Install GitHub Desktop? ', (answer) => {
+        rl.question('7z is not installed. Install it? ', (answer) => {
             answer = answer.toLowerCase();
             resolve(answer == "yes" || answer == "y");
         });
@@ -48,22 +50,18 @@ function confirm() {
 }
 
 async function install() {
-    const temp = path.resolve(__dirname, "../temp/github.exe");
+    const temp = path.resolve(__dirname, "../temp/7z.zip");
 
-    // await downloadTo("https://central.github.com/deployments/desktop/desktop/latest/win32", temp);
+    await downloadTo("https://raw.githubusercontent.com/oricalvo/myenv-packages/master/7z.zip", temp);
 
-    console.log("Running Github installation at " + temp);
-
-    await spawn(temp, [], {
-        validateExitCode: true,
-    });
+    unzipTo(temp, nppDir);
 }
 
 function run() {
-    console.log("Running Github desktop from " + githubExe);
+    console.log("Running 7z from " + nppExe);
 
-    return spawn(githubExe, [], {
-        detached: true,
+    const args = process.argv.slice(2);
+    return spawn(nppExe, args, {
+        stdio: "inherit",
     });
 }
-

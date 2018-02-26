@@ -241,7 +241,7 @@ function spawn(command, args, overrideOptions) {
                         reject(new Error("spawn return error code " + code));
                     }
                     else {
-                        resolve();
+                        resolve(child);
                     }
                 });
             }
