@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/oricalvo/myenv#readme",
   "dependencies": {
-    "adm-zip": "^0.4.7"
+    "adm-zip": "^0.4.7",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {}
 }
