@@ -80,18 +80,18 @@ function confirm() {
 async function install() {
     const all = [];
 
-    console.log("Downloading WebStorm ... ");
+    // console.log("Downloading WebStorm ... ");
 
-    for(let i=1; i<=19; i++){
-        const fileName = `WebStorm.zip.${pad(i, 3)}`;
-        const dest = path.resolve(__dirname, "../temp", fileName);
-        const url = `https://raw.githubusercontent.com/oricalvo/myenv-packages/master/webstorm/${fileName}`;
-        all.push(downloadTo(url, dest, true));
-    }
+    // for(let i=1; i<=19; i++){
+        // const fileName = `WebStorm.zip.${pad(i, 3)}`;
+        // const dest = path.resolve(__dirname, "../temp", fileName);
+        // const url = `https://raw.githubusercontent.com/oricalvo/myenv-packages/master/webstorm/${fileName}`;
+        // all.push(downloadTo(url, dest, true));
+    // }
 
-    await Promise.all(all);
+    // await Promise.all(all);
 
-    console.log("Done");
+    // console.log("Done");
 
     await spawn("7z", ["x", "WebStorm.zip.001"], {
         shell: true,
@@ -101,7 +101,7 @@ async function install() {
 
 
     await spawn("WebStorm.exe", [], {
-        detached: true,
+        validateExitCode: true,
         cwd: path.resolve(__dirname, "../temp"),
     });
 }
