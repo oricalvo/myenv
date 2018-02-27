@@ -57,11 +57,13 @@ async function install() {
     unzipTo(temp, binDir);
 }
 
-function run() {
+async function run() {
     console.log("Running Notepad++ from " + nppExe);
 
     const args = process.argv.slice(2);
-    return spawn(nppExe, args, {
+    const p = await spawn(nppExe, args, {
         detached: true,
     });
+
+    p.unref();
 }
