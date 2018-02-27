@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const {downloadTo, directoryExists, fileExists, spawn, unzipTo, promisifyNodeFn1} = require("./helpers");
+const {pad, downloadTo, directoryExists, fileExists, spawn, unzipTo, promisifyNodeFn1} = require("./helpers");
 const readline = require('readline');
 
 const readdir = promisifyNodeFn1(fs.readdir)
@@ -8,7 +8,6 @@ const stat = promisifyNodeFn1(fs.stat);
 
 // const appName = "pstools";
 // const appExeFileName = `${process.argv[2]}.exe`;
-const url = "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/WebStorm.exe";
 //
 // const binDir = path.resolve(__dirname, "../bin");
 const jetbrainsDir = path.resolve(process.env.ProgramFiles, `JetBrains`);
@@ -24,15 +23,14 @@ main();
 async function main() {
     try {
         let exeFilePath = await findWebStormExeFilePath();
-
-        //if (!exeFilePath) {
+        // if (!exeFilePath) {
             if (await confirm()) {
                 await install();
             }
 			else {
 				return;
 			}
-        //}
+        // }
 
         exeFilePath = await findWebStormExeFilePath();
         if(!exeFilePath) {
@@ -85,12 +83,31 @@ function confirm() {
 }
 
 async function install() {
-    const temp = path.resolve(__dirname, "../temp/WebStorm.exe");
+    const all = [];
 
-    await downloadTo(url, temp);
+    console.log("Downloading WebStorm ... ");
 
-    await spawn(temp, [], {
+    for(let i=1; i<=19; i++){
+        const fileName = `WebStorm.zip.${pad(i, 3)}`;
+        const dest = path.resolve(__dirname, "../temp", fileName);
+        const url = `https://raw.githubusercontent.com/oricalvo/myenv-packages/master/webstorm/${fileName}`;
+        all.push(downloadTo(url, dest, true));
+    }
+
+    await Promise.all(all);
+
+    console.log("Done");
+
+    await spawn("7z", ["x", "WebStorm.zip.001"], {
+        shell: true,
         validateExitCode: true,
+        cwd: path.resolve(__dirname, "../temp"),
+    });
+
+
+    await spawn("WebStorm.exe", [], {
+        detached: true,
+        cwd: path.resolve(__dirname, "../temp"),
     });
 }
 

@@ -6,7 +6,7 @@ const readline = require("readline");
 const child_process = require("child_process");
 const AdmZip = require('adm-zip');
 
-function downloadTo(url, dest) {
+function downloadTo(url, dest, silent) {
     return new Promise((resolve,reject)=> {
         const filePath = path.resolve(path.isAbsolute(dest) ? dest : path.join(process.cwd(), dest));
         const writeStream = fs.createWriteStream(filePath);
@@ -14,7 +14,9 @@ function downloadTo(url, dest) {
         let contentLength = 0;
         let read = 0;
 
-        console.log("Connecting to " + url + " and saving to " + filePath);
+        if(!silent) {
+            console.log("Connecting to " + url + " and saving to " + filePath);
+        }
 
         const h = url.startsWith("https") ? https : http;
 
@@ -22,14 +24,19 @@ function downloadTo(url, dest) {
             contentLength = res.headers['content-length'];
 
             res.on("data", function (buffer) {
-                if (read == 0) {
-                    process.stdout.write("Downloading ");
+                if(!silent) {
+                    if (read == 0) {
+                        process.stdout.write("Downloading ");
+                    }
                 }
 
                 read += buffer.length;
-                readline.cursorTo(process.stdout, "Downloading ".length, null);
-                //readline.clearLine(process.stdout);
-                process.stdout.write(Math.round(read * 100 / contentLength) + "%");
+
+                if(!silent) {
+                    readline.cursorTo(process.stdout, "Downloading ".length, null);
+                    //readline.clearLine(process.stdout);
+                    process.stdout.write(Math.round(read * 100 / contentLength) + "%");
+                }
             }).on("error", function(err){
                 reject(err);
             }).pipe(writeStream)
@@ -39,7 +46,9 @@ function downloadTo(url, dest) {
                 })
                 .on("finish", function () {
                     resolve();
-                    console.log();
+                    if(!silent) {
+                        console.log();
+                    }
                 });
         });
     });
@@ -260,6 +269,12 @@ function unzipTo(source, dest){
     zip.extractAllTo(dest);
 }
 
+function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
+
 module.exports = {
     downloadTo,
     spawn,
@@ -268,4 +283,6 @@ module.exports = {
     unzipTo,
     promisifyNodeFn1,
     promisifyNodeFn2,
+    pad,
 };
+
