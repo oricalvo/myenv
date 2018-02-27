@@ -6,12 +6,7 @@ const readline = require('readline');
 const readdir = promisifyNodeFn1(fs.readdir)
 const stat = promisifyNodeFn1(fs.stat);
 
-// const appName = "pstools";
-// const appExeFileName = `${process.argv[2]}.exe`;
-//
-// const binDir = path.resolve(__dirname, "../bin");
 const jetbrainsDir = path.resolve(process.env.ProgramFiles, `JetBrains`);
-// const appExeFilePath = path.resolve(appDir, appExeFileName);
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -23,14 +18,14 @@ main();
 async function main() {
     try {
         let exeFilePath = await findWebStormExeFilePath();
-        // if (!exeFilePath) {
+        if (!exeFilePath) {
             if (await confirm()) {
                 await install();
             }
 			else {
 				return;
 			}
-        // }
+        }
 
         exeFilePath = await findWebStormExeFilePath();
         if(!exeFilePath) {
