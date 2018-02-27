@@ -3,8 +3,8 @@ const path = require("path");
 const {downloadTo, directoryExists, spawn, unzipTo} = require("./helpers");
 const readline = require('readline');
 
-const appName = "fiddler";
-const appExeName = "Fiddler.exe"
+const appName = "vscode";
+const appExeName = "Code.exe"
 
 const binDir = path.resolve(__dirname, "../bin");
 const appDir = path.resolve(binDir, appName);
@@ -62,12 +62,14 @@ async function install() {
     unzipTo(temp, appDir);
 }
 
-function run() {
+async function run() {
     console.log(`Running ${appName} from ${appExePath}`);
 
     const args = process.argv.slice(2);
-    return spawn(appExePath, args, {
+    const p = await spawn(appExePath, args, {
         stdio: detached ? "ignore" : "inherit",
         detached: detached,
     });
+
+    p.unref();
 }
