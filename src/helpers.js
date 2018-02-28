@@ -5,8 +5,39 @@ const https = require("https");
 const readline = require("readline");
 const child_process = require("child_process");
 const AdmZip = require('adm-zip');
+const rimraf = require("rimraf");
 
-function downloadTo(url, dest, silent) {
+function httpPost(options, body){
+    return new Promise((resolve,reject)=>{
+        const request = https.request(options, function(res){
+            if(res.statusCode >= 300) {
+                reject(new Error("Server returned status code " + res.statusCode + " " + res.statusMessage));
+                return;
+            };
+
+            res.on("error", function(err){
+                reject(err);
+            });
+
+            let body = "";
+            res.on("data", function(buf){
+                body += buf.toString();
+            });
+
+            res.on("end", function(){
+                resolve(body);
+            });
+        });
+
+        request.write(body);
+        request.end();
+    });
+}
+
+function downloadTo(url, dest, message) {
+    message = message || "Downloading";
+    message += " ";
+
     return new Promise((resolve,reject)=> {
         const filePath = path.resolve(path.isAbsolute(dest) ? dest : path.join(process.cwd(), dest));
         const writeStream = fs.createWriteStream(filePath);
@@ -14,28 +45,33 @@ function downloadTo(url, dest, silent) {
         let contentLength = 0;
         let read = 0;
 
-        if(!silent) {
-            console.log("Connecting to " + url + " and saving to " + filePath);
-        }
-
         const h = url.startsWith("https") ? https : http;
 
         h.get(url, function (res) {
+            if(res.statusCode == 302){
+                downloadTo(res.headers["location"], dest, message).then(resolve).catch(reject);
+                return;
+            }
+            else if(res.statusCode == 404){
+                reject(new Error("Server responded with 404"));
+                return;
+            }
+
             contentLength = res.headers['content-length'];
 
             res.on("data", function (buffer) {
-                if(!silent) {
-                    if (read == 0) {
-                        process.stdout.write("Downloading ");
-                    }
+                if (read == 0) {
+                    process.stdout.write(message);
                 }
 
                 read += buffer.length;
 
-                if(!silent) {
-                    readline.cursorTo(process.stdout, "Downloading ".length, null);
-                    //readline.clearLine(process.stdout);
+                readline.cursorTo(process.stdout, message.length, null);
+                if(contentLength) {
                     process.stdout.write(Math.round(read * 100 / contentLength) + "%");
+                }
+                else {
+                    process.stdout.write(read + " bytes");
                 }
             }).on("error", function(err){
                 reject(err);
@@ -46,9 +82,7 @@ function downloadTo(url, dest, silent) {
                 })
                 .on("finish", function () {
                     resolve();
-                    if(!silent) {
-                        console.log();
-                    }
+                    console.log();
                 });
         });
     });
@@ -104,23 +138,7 @@ async function isDirectory(path) {
     }
 }
 
-async function deleteDirectory(path) {
-    try {
-        const isDir = await isDirectory(path);
-        if (!isDir) {
-            return;
-        }
-
-        await fsExtraRemove(path);
-    }
-    catch (err) {
-        if (err.code == "ENOENT") {
-            return;
-        }
-
-        throw err;
-    }
-}
+const deleteDirectory = promisifyNodeFn1(rimraf);
 
 async function copyFile(from, to, ignoreDir = false) {
     const stats = await getStat(from);
@@ -147,7 +165,7 @@ async function deleteFile(path) {
             throw new Error("Specified path \"" + path + "\" is not a file");
         }
 
-        await fsExtraRemove(path);
+        await unlink(path);
     }
     catch(err) {
         if(err.code == "ENOENT") {
@@ -158,11 +176,8 @@ async function deleteFile(path) {
     }
 }
 
-function readFile(path, enc) {
-    return fs["readFileAsync"](path, enc).then(res => {
-        return res;
-    });
-}
+const readFile = promisifyNodeFn1(fs.readFile);
+const unlink = promisifyNodeFn1(fs.unlink);
 
 function writeFile(path, data, enc) {
     return fs["writeFileAsync"](path, data, enc);
@@ -265,8 +280,12 @@ function spawn(command, args, overrideOptions) {
 }
 
 function unzipTo(source, dest){
-    const zip = new AdmZip(source);
-    zip.extractAllTo(dest);
+    return spawn("7z.exe", ["x", source, `-o${dest}`],{
+       stdio: "ignore",
+       validateExitCode: true,
+    });
+    //const zip = new AdmZip(source);
+    //zip.extractAllTo(dest);
 }
 
 function pad(n, width, z) {
@@ -284,5 +303,9 @@ module.exports = {
     promisifyNodeFn1,
     promisifyNodeFn2,
     pad,
+    readJSONFile,
+    deleteFile,
+    deleteDirectory,
+    httpPost,
 };
 
