@@ -26,7 +26,7 @@
   },
   {
     "name": "github",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/github.zip",
-    "exe": "github"
+    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/github.7z",
+    "exe": "GitHubDesktop"
   }
 ]
