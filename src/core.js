@@ -56,13 +56,9 @@ async function isInstalled(app) {
     return await directoryExists(app.dir);
 }
 
-function confirm(app) {
-    return new Promise((resolve, reject)=> {
-        readLine(`${app.name} is not installed. Install it? `, (answer) => {
-            answer = answer.toLowerCase();
-            resolve(answer == "yes" || answer == "y");
-        });
-    });
+async function confirm(app) {
+    const answer = (await readLine(`${app.name} is not installed. Install it? `)).toLowerCase();
+    return answer == "yes" || answer == "y";
 }
 
 async function install(app) {
@@ -80,6 +76,7 @@ async function install(app) {
 async function uninstall(app){
     console.log("Uninstalling " + app.name + " from " + app.dir);
     await deleteDirectory(app.dir);
+    console.log("Done");
 }
 
 async function run(app) {

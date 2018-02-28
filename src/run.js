@@ -1,4 +1,4 @@
-const {rl, loadApps, getApp, installAndRun} = require("./core");
+const {loadApps, getApp, installAndRun} = require("./core");
 const {clean} = require("./helpers");
 
 main();

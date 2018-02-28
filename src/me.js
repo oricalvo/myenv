@@ -1,4 +1,5 @@
-const {rl, loadApps, getApp, uninstall} = require("./core");
+const {loadApps, getApp, uninstall} = require("./core");
+const {clean} = require("./helpers");
 
 main();
 
@@ -25,8 +26,6 @@ async function main() {
         console.error(err);
     }
     finally {
-        if(rl) {
-            rl.close();
-        }
+        clean();
     }
 }
