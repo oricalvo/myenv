@@ -107,12 +107,10 @@ async function push() {
         console.log("Nothing to push");
         return;
     }
-    
-    await spawn("npm", ["version", "patch"], {
+
+    const version = await exec("npm version patch", {
         shell: true,
         cwd: __dirname,
-        stdio: "inherit",
-        validateExitCode: true,
     });
 
     await spawn("git", ["add", "."], {
@@ -121,7 +119,7 @@ async function push() {
         validateExitCode: true,
     });
 
-    await spawn("git", ["commit", "-m", "Pushing new version"], {
+    await spawn("git", ["commit", "-m", `Version ${version}`], {
         cwd: path.resolve(__dirname, ".."),
         stdio: "inherit",
         validateExitCode: true,

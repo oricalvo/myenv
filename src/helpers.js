@@ -341,9 +341,11 @@ function gitConfig(key){
 
 function exec(command, options) {
     return new Promise((resolve, reject) => {
-        child_process.exec(command, (error, stdout, stderr) => {
+        console.log(command);
+
+        child_process.exec(command, options, (error, stdout, stderr) => {
             if(error) {
-                reject("exec failed with error code " + error.code);
+                reject("Command \"" + command + "\" failed with error code " + error.code);
             }
 
             resolve(stdout.trim());
