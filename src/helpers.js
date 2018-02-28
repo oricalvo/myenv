@@ -117,19 +117,6 @@ function downloadTo(url, dest, message) {
     });
 }
 
-function getStat(path) {
-    return new Promise((resolve, reject)=> {
-        fs.stat(path, function(err, stat) {
-        if(err) {
-            reject(err);
-            return;
-        }
-
-        resolve(stat);
-    });
-});
-}
-
 function directoryExists(dir) {
     return isDirectory(dir);
 }
@@ -207,6 +194,8 @@ async function deleteFile(path) {
 
 const readFile = promisifyNodeFn1(fs.readFile);
 const unlink = promisifyNodeFn1(fs.unlink);
+const readdir = promisifyNodeFn1(fs.readdir);
+const getStat = promisifyNodeFn1(fs.stat);
 
 function writeFile(path, data, enc) {
     return fs["writeFileAsync"](path, data, enc);
@@ -383,4 +372,6 @@ module.exports = {
     clean,
     gitConfig,
     readPassword,
+    readdir,
+    getStat,
 };

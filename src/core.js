@@ -12,7 +12,7 @@ const {
     readLine,
 } = require("./helpers");
 
-const binDir = path.resolve(__dirname, "../bin");
+const packagesDir = path.resolve(__dirname, "../packages");
 
 async function init(){
     const configFilePath = path.resolve(__dirname, "..");
@@ -34,15 +34,15 @@ function getApp(apps, appName){
 
     return {
         ...app,
-        dir: path.resolve(binDir, app.name),
-        exe: path.resolve(binDir, app.name, app.exe),
+        dir: path.resolve(packagesDir, app.name),
+        exe: path.resolve(packagesDir, app.name, app.exe),
     };
 }
 
 async function installAndRun(app){
     if (!await isInstalled(app)) {
         if (await confirm(app)) {
-            await install(app);
+            await installApp(app);
         }
         else {
             return;
@@ -61,7 +61,12 @@ async function confirm(app) {
     return answer == "yes" || answer == "y";
 }
 
-async function install(app) {
+async function installApp(app) {
+    if(await directoryExists(app.dir)) {
+        console.log(`${app.name} is already installed`);
+        return;
+    }
+
     const index = app.url.lastIndexOf(".");
     const ext = index==-1 ? "zip" : app.url.substring(index+1);
     const temp = path.resolve(__dirname, `../temp/${uuid()}.${ext}`);
@@ -73,10 +78,9 @@ async function install(app) {
     await deleteFile(temp);
 }
 
-async function uninstall(app){
+async function uninstallApp(app){
     console.log("Uninstalling " + app.name + " from " + app.dir);
     await deleteDirectory(app.dir);
-    console.log("Done");
 }
 
 async function run(app) {
@@ -95,5 +99,6 @@ module.exports = {
     loadApps,
     getApp,
     installAndRun,
-    uninstall,
+    install: installApp,
+    uninstall: uninstallApp,
 };
