@@ -1,6 +1,6 @@
 const path = require("path");
 const {loadRegistry, getApp, uninstallApp, installApp, folders} = require("./core");
-const {clean, readJSONFile, readdir, getStat} = require("./helpers");
+const {clean, readJSONFile, readdir, getStat, spawn} = require("./helpers");
 
 const entries = [
     {command: ["install", "i"], handler: install},
@@ -8,6 +8,8 @@ const entries = [
     {command: ["version", "v"], handler: version},
     {command: ["list"], handler: list},
     {command: ["available"], handler: available},
+    {command: ["update"], handler: update},
+    {command: ["push"], handler: push},
 ];
 
 main();
@@ -90,4 +92,38 @@ async function uninstall() {
     const app = getApp(registry, appName);
 
     await uninstallApp(app);
+}
+
+async function update() {
+    spawn("git", ["pull"], {
+        cwd: path.resolve(__dirname, ".."),
+        stdio: "inherit",
+    });
+}
+
+async function push() {
+    await spawn("npm", ["version", "patch"], {
+        shell: true,
+        cwd: __dirname,
+        stdio: "inherit",
+        validateExitCode: true,
+    });
+
+    await spawn("git", ["add", "."], {
+        cwd: path.resolve(__dirname, ".."),
+        stdio: "inherit",
+        validateExitCode: true,
+    });
+
+    await spawn("git", ["commit", "-m", "Pushing new version"], {
+        cwd: path.resolve(__dirname, ".."),
+        stdio: "inherit",
+        validateExitCode: true,
+    });
+
+    await spawn("git", ["push"], {
+        cwd: path.resolve(__dirname, ".."),
+        stdio: "inherit",
+        validateExitCode: true,
+    });
 }
