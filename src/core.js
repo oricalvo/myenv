@@ -76,6 +76,7 @@ async function installApp(app) {
 
     await downloadTo(app.url, temp, "Downloading " + app.name);
 
+    console.log("Extracting package to " + app.dir);
     await unzipTo(temp, app.dir);
 
     await deleteFile(temp);

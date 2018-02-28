@@ -89,5 +89,5 @@ async function uninstall() {
     const apps = await loadApps();
     const app = getApp(apps, appName);
 
-    await uninstall(app);
+    await uninstallApp(app);
 }
