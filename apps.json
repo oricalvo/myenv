@@ -18,5 +18,15 @@
     "name": "vscode",
     "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/vscode.zip",
     "exe": "code"
+  },
+  {
+    "name": "fiddler",
+    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/fiddler.zip",
+    "exe": "fiddler"
+  },
+  {
+    "name": "github",
+    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/github.zip",
+    "exe": "github"
   }
 ]
