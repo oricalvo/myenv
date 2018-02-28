@@ -1,6 +1,6 @@
 const path = require("path");
 const {loadRegistry, getApp, uninstallApp, installApp, folders} = require("./core");
-const {clean, readJSONFile, readdir, getStat, spawn} = require("./helpers");
+const {clean, readJSONFile, readdir, getStat, spawn, exec} = require("./helpers");
 
 const entries = [
     {command: ["install", "i"], handler: install},
@@ -102,6 +102,12 @@ async function update() {
 }
 
 async function push() {
+    const res = await exec("git status");
+    if(res.includes("nothing to commit")) {
+        console.log("Nothing to push");
+        return;
+    }
+    
     await spawn("npm", ["version", "patch"], {
         shell: true,
         cwd: __dirname,

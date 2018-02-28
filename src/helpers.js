@@ -371,4 +371,5 @@ module.exports = {
     readPassword,
     readdir,
     getStat,
+    exec,
 };
