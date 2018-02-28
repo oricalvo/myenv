@@ -12,7 +12,10 @@ const {
     readLine,
 } = require("./helpers");
 
-const packagesDir = path.resolve(__dirname, "../packages");
+const folders = {
+    packages: path.resolve(__dirname, "../packages"),
+    bin: path.resolve(__dirname, "../bin"),
+};
 
 async function init(){
     const configFilePath = path.resolve(__dirname, "..");
@@ -34,8 +37,8 @@ function getApp(apps, appName){
 
     return {
         ...app,
-        dir: path.resolve(packagesDir, app.name),
-        exe: path.resolve(packagesDir, app.name, app.exe),
+        dir: path.resolve(folders.packages, app.name),
+        exe: path.resolve(folders.packages, app.name, app.exe),
     };
 }
 
@@ -99,6 +102,7 @@ module.exports = {
     loadApps,
     getApp,
     installAndRun,
-    install: installApp,
-    uninstall: uninstallApp,
+    installApp,
+    uninstallApp,
+    folders,
 };
