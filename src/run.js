@@ -1,4 +1,4 @@
-const {loadApps, getApp, installAndRun} = require("./core");
+const {loadRegistry, getApp, installAndRun} = require("./core");
 const {clean} = require("./helpers");
 
 main();
@@ -10,8 +10,8 @@ async function main() {
             throw new Error("App name parameter is missin");
         }
 
-        const apps = await loadApps();
-        const app = getApp(apps, appName);
+        const regsitry = await loadRegistry();
+        const app = getApp(regsitry, appName);
 
         await installAndRun(app);
     }

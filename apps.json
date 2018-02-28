@@ -1,32 +1,43 @@
-[
-  {
-    "name": "npp",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/npp.7z",
-    "exe": "notepad++.exe"
-  },
-  {
-    "name": "conemu",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/conemu.7z",
-    "exe": "ConEmu64.exe"
-  },
-  {
-    "name": "procexp",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/procexp.7z",
-    "exe": "procexp64"
-  },
-  {
-    "name": "vscode",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/vscode.7z",
-    "exe": "code"
-  },
-  {
-    "name": "fiddler",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/fiddler.7z",
-    "exe": "fiddler"
-  },
-  {
-    "name": "github",
-    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/github.7z",
-    "exe": "GitHubDesktop"
-  }
-]
+{
+  "apps": [
+    {
+      "name": "npp",
+      "exe": "notepad++.exe"
+    },
+    {
+      "name": "conemu",
+      "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/conemu.7z",
+      "exe": "ConEmu64.exe"
+    },
+    {
+      "name": "procexp",
+      "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/procexp.7z",
+      "exe": "procexp64"
+    },
+    {
+      "name": "vscode",
+      "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/vscode.7z",
+      "exe": "code"
+    },
+    {
+      "name": "fiddler",
+      "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/fiddler.7z",
+      "exe": "fiddler"
+    },
+    {
+      "name": "github",
+      "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/github.7z",
+      "exe": "GitHubDesktop"
+    },
+    {
+      "name": "pskill",
+      "package": "pstools",
+      "exe": "pskill"
+    }
+  ],
+  "packages": [
+    {
+      "name": "pstools"
+    }
+  ]
+}

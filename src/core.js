@@ -24,22 +24,46 @@ async function init(){
     }
 }
 
-function loadApps(){
+function loadRegistry(){
     const filePath = path.resolve(__dirname, "../apps.json");
     return readJSONFile(filePath);
 }
 
-function getApp(apps, appName){
-    const app = apps.find(app => app.name == appName);
+function getApp(registry, appName){
+    const app = registry.apps.find(app => app.name == appName);
     if(!app){
         throw new Error("App with name " + appName + " was not found");
     }
 
+    const dir = app.package ? path.resolve(folders.packages, app.package) : path.resolve(folders.packages, app.name);
+    let url = app.package ? getPackage(registry, app.package).url : app.url;
+    if(!url) {
+        url = getUrl(app.name);
+    }
+
     return {
         ...app,
-        dir: path.resolve(folders.packages, app.name),
-        exe: path.resolve(folders.packages, app.name, app.exe),
+        url,
+        dir,
+        exe: path.resolve(dir, app.exe),
     };
+}
+
+function getPackage(registry, packageName){
+    const package = registry.packages.find(app => app.name == packageName);
+    if(!package){
+        throw new Error("Package with name " + packageName + " was not found");
+    }
+
+    if(!package.url) {
+        package.url = getUrl(package.name);
+    }
+
+    return package;
+}
+
+function getUrl(name) {
+    return `https://raw.githubusercontent.com/oricalvo/myenv-packages/master/${name}.7z`;
 }
 
 async function installAndRun(app){
@@ -88,7 +112,7 @@ async function uninstallApp(app){
 }
 
 async function run(app) {
-    console.log(`Running ${app.name} from ${app.exe}`);
+    console.log(`Running ${app.exe}`);
 
     const args = process.argv.slice(3);
     const child = await spawn(app.exe, args, {
@@ -100,7 +124,7 @@ async function run(app) {
 }
 
 module.exports = {
-    loadApps,
+    loadRegistry,
     getApp,
     installAndRun,
     installApp,

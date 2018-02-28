@@ -1,5 +1,5 @@
 const path = require("path");
-const {loadApps, getApp, uninstallApp, installApp, folders} = require("./core");
+const {loadRegistry, getApp, uninstallApp, installApp, folders} = require("./core");
 const {clean, readJSONFile, readdir, getStat} = require("./helpers");
 
 const entries = [
@@ -47,8 +47,8 @@ async function main() {
 }
 
 async function available() {
-    const apps = await loadApps();
-    for(const app of apps) {
+    const registry = await loadRegistry();
+    for(const app of registry.apps) {
         console.log(app.name);
     }
 }
@@ -74,8 +74,8 @@ async function install() {
         throw new Error("App name parameter is missing");
     }
 
-    const apps = await loadApps();
-    const app = getApp(apps, appName);
+    const registry = await loadRegistry();
+    const app = getApp(registry, appName);
 
     await installApp(app);
 }
@@ -86,8 +86,8 @@ async function uninstall() {
         throw new Error("App name parameter is missing");
     }
 
-    const apps = await loadApps();
-    const app = getApp(apps, appName);
+    const registry = await loadRegistry();
+    const app = getApp(registry, appName);
 
     await uninstallApp(app);
 }
