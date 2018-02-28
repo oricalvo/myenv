@@ -280,9 +280,10 @@ function spawn(command, args, overrideOptions) {
 }
 
 function unzipTo(source, dest){
-    return spawn("7z.exe", ["x", source, `-o${dest}`],{
-       stdio: "ignore",
-       validateExitCode: true,
+    return spawn("7z", ["x", source, `-o${dest}`], {
+        stdio: "ignore",
+        validateExitCode: true,
+        shell: true,
     });
     //const zip = new AdmZip(source);
     //zip.extractAllTo(dest);
