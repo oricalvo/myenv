@@ -21,6 +21,7 @@ mutableStdout.muted = false;
 
 const rl = readline.createInterface({
     input: process.stdin,
+    //output: process.stdout,
     output: mutableStdout,
     terminal: true,
 });

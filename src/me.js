@@ -1,6 +1,8 @@
 const path = require("path");
 const {loadRegistry, getApp, uninstallApp, installApp, folders} = require("./core");
-const {clean, readJSONFile, readdir, getStat, spawn, exec} = require("./helpers");
+const {clean, readJSONFile, readdir, getStat, spawn, exec, gitConfig, readPassword, readLine, httpRequest} = require("./helpers");
+const url = require('url');
+const https = require("https");
 
 const entries = [
     {command: ["install", "i"], handler: install},
@@ -10,6 +12,7 @@ const entries = [
     {command: ["available"], handler: available},
     {command: ["update"], handler: update},
     {command: ["push"], handler: push},
+    {command: ["repos"], handler: repos},
 ];
 
 main();
@@ -129,5 +132,98 @@ async function push() {
         cwd: path.resolve(__dirname, ".."),
         stdio: "inherit",
         validateExitCode: true,
+    });
+}
+
+async function repos() {
+    const userName = await gitConfig("user.name");
+    if(!userName){
+        throw new Error("Unable to determine git user name. Please ensure \"git config user.name\" returns your user name");
+    }
+    console.log("User name: " + userName);
+
+    const password = "hello05"; //await readLine("Password: ");
+    const token = new Buffer(userName + ":" + password).toString("base64");
+
+    var options = {
+        host: 'api.github.com',
+        port: '443',
+        path: '/user/repos',
+        method: 'GET',
+        headers: {
+            'Authorization': `Basic ${token}`,
+            "user-agent": "node", // for some reason this is a must
+        },
+    };
+
+    const repos = await getRepos(options);
+
+    for(const repo of repos) {
+        console.log(repo.name);
+    }
+    
+    console.log(repos.length);
+}
+
+function getRepos(options){
+    return new Promise((resolve,reject)=>{
+        let body = "";
+
+        const request = https.request(options, function(res){
+            if(res.statusCode >= 300) {
+                reject(new Error("Server returned status code " + res.statusCode + " " + res.statusMessage));
+                return;
+            };
+
+            res.on("error", function(err){
+                reject(err);
+            });
+
+            let body = "";
+            res.on("data", function(buf){
+                body += buf.toString();
+            });
+
+            res.on("end", function(){
+                const repos = JSON.parse(body);
+
+                const link = res.headers.link;
+                if(link) {
+                    const next = link.split(",").find(x => x.includes('rel="next"'));
+                    if(next) {
+                        const y = next.split(";")[0].trim();
+                        const x = y.substring(1, y.length - 1);
+                        const parsed = url.parse(x);
+                        options.path = parsed.path;
+
+                        console.log(options.path);
+
+                        getRepos(options).then(r => {
+                            const res = repos.concat(r);
+                            resolve(res);
+                        }).catch(reject);
+                    }
+                    else {
+                        resolve(repos);
+                    }
+                }
+                else {
+                    resolve(repos);
+                }
+            });
+        });
+
+        if(body) {
+            if(typeof body == "object") {
+                request.write(JSON.stringify(body));
+                options.headers = options.headers || {};
+                options.headers["Content-Type"] = options.headers["Content-Type"] || "application/json";
+            }
+            else {
+                request.write(body);
+            }
+        }
+
+        request.end();
     });
 }
