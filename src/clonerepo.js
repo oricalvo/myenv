@@ -16,7 +16,9 @@ async function main() {
         }
         console.log("User name: " + userName);
 
-        await spawn("git", ["clone", `https://github.com/${userName}/${repoName}`], {
+        let args = ["clone", `https://github.com/${userName}/${repoName}`];
+        args = args.concat(process.argv.slice(3));
+        await spawn("git", args, {
             stdio: "inherit",
             validateExitCode: true,
         });

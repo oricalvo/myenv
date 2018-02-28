@@ -58,7 +58,7 @@ async function isInstalled(app) {
 
 function confirm(app) {
     return new Promise((resolve, reject)=> {
-        rl.question(`${app.name} is not installed. Install it? `, (answer) => {
+        readLine(`${app.name} is not installed. Install it? `, (answer) => {
             answer = answer.toLowerCase();
             resolve(answer == "yes" || answer == "y");
         });
