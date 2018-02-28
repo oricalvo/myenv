@@ -11,7 +11,7 @@
   },
   {
     "name": "procexp",
-    "url": "https://download.sysinternals.com/files/ProcessExplorer.zip",
+    "url": "https://raw.githubusercontent.com/oricalvo/myenv-packages/master/procexp.7z",
     "exe": "procexp64"
   },
   {
