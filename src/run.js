@@ -1,4 +1,5 @@
 const {rl, loadApps, getApp, installAndRun} = require("./core");
+const {clean} = require("./helpers");
 
 main();
 
@@ -18,8 +19,6 @@ async function main() {
         console.error(err);
     }
     finally {
-        if(rl) {
-            rl.close();
-        }
+        clean();
     }
 }

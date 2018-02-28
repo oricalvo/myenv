@@ -1,6 +1,5 @@
 const uuid = require("uuid/v1");
 const path = require("path");
-const readline = require('readline');
 const {
     downloadTo,
     directoryExists,
@@ -8,15 +7,19 @@ const {
     unzipTo,
     readJSONFile,
     deleteFile,
-    deleteDirectory
+    deleteDirectory,
+    fileExists,
+    readLine,
 } = require("./helpers");
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
 const binDir = path.resolve(__dirname, "../bin");
+
+async function init(){
+    const configFilePath = path.resolve(__dirname, "..");
+    if(await fileExists(configFilePath)) {
+       return;
+    }
+}
 
 function loadApps(){
     const filePath = path.resolve(__dirname, "../apps.json");
@@ -95,6 +98,5 @@ module.exports = {
     loadApps,
     getApp,
     installAndRun,
-    rl,
     uninstall,
 };

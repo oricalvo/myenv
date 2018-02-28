@@ -6,8 +6,27 @@ const readline = require("readline");
 const child_process = require("child_process");
 const AdmZip = require('adm-zip');
 const rimraf = require("rimraf");
+const {Writable} = require("stream");
 
-function httpPost(options, body){
+const mutableStdout = new Writable({
+    write: function(chunk, encoding, callback) {
+        if (!this.muted) {
+            process.stdout.write(chunk, encoding);
+        }
+
+        callback();
+    }
+});
+
+mutableStdout.muted = false;
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: mutableStdout,
+    terminal: true,
+});
+
+function httpRequest(options, body){
     return new Promise((resolve,reject)=>{
         const request = https.request(options, function(res){
             if(res.statusCode >= 300) {
@@ -29,7 +48,17 @@ function httpPost(options, body){
             });
         });
 
-        request.write(body);
+        if(body) {
+            if(typeof body == "object") {
+                request.write(JSON.stringify(body));
+                options.headers = options.headers || {};
+                options.headers["Content-Type"] = options.headers["Content-Type"] || "application/json";
+            }
+            else {
+                request.write(body);
+            }
+        }
+
         request.end();
     });
 }
@@ -295,6 +324,47 @@ function pad(n, width, z) {
     return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }
 
+function readLine(question) {
+    return new Promise((resolve, reject) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
+}
+
+async function readPassword(question){
+    try {
+        process.stdout.write(question);
+        mutableStdout.muted = true;
+        const answer = await readLine("");
+        console.log();
+        return answer;
+    }
+    finally {
+        mutableStdout.muted = false;
+    }
+}
+
+function clean(){
+    rl.close();
+}
+
+function gitConfig(key){
+    return exec("git config " + key);
+}
+
+function exec(command, options) {
+    return new Promise((resolve, reject) => {
+        child_process.exec(command, (error, stdout, stderr) => {
+            if(error) {
+                reject("exec failed with error code " + error.code);
+            }
+
+            resolve(stdout.trim());
+        });
+    });
+}
+
 module.exports = {
     downloadTo,
     spawn,
@@ -307,6 +377,10 @@ module.exports = {
     readJSONFile,
     deleteFile,
     deleteDirectory,
-    httpPost,
+    httpRequest,
+    fileExists,
+    readLine,
+    clean,
+    gitConfig,
+    readPassword,
 };
-

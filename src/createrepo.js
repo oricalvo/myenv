@@ -1,45 +1,22 @@
 const readline = require('readline');
-const {httpPost} = require("./helpers");
-const {Writable} = require("stream");
-
-var mutableStdout = new Writable({
-    write: function(chunk, encoding, callback) {
-        if (!this.muted) {
-            process.stdout.write(chunk, encoding);
-        }
-
-        callback();
-    }
-});
-
-mutableStdout.muted = false;
-
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: mutableStdout,
-    terminal: true,
-});
-
-async function passwordQuestion(question){
-    try {
-        process.stdout.write(question);
-        mutableStdout.muted = true;
-        const answer = await readLine("");
-        console.log();
-        return answer;
-    }
-    finally {
-        mutableStdout.muted = false;
-    }
-}
+const {httpRequest, clean, gitConfig, readPassword, readLine} = require("./helpers");
 
 main();
 
 async function main() {
     try {
-        const userName = await readLine("User name: ");
-        const password = await passwordQuestion("Password: ");
-        const repo = await readLine("Repo name: ");
+        const repoName = process.argv[2];
+        if(!repoName){
+            throw new Error("Missing repo parameter");
+        }
+
+        const userName = await gitConfig("user.name");
+        if(!userName){
+            throw new Error("Unable to determine git user name. Please ensure \"git config user.name\" returns your user name");
+        }
+        console.log("User name: " + userName);
+
+        const password = await readPassword("Password: ");
         const token = new Buffer(userName + ":" + password).toString("base64");
 
         var options = {
@@ -54,9 +31,9 @@ async function main() {
             },
         };
 
-        const res = await httpPost(options, JSON.stringify({
-            name: repo,
-        }));
+        const res = await httpRequest(options, {
+            name: repoName,
+        });
 
         console.log("Done");
     }
@@ -64,15 +41,7 @@ async function main() {
         console.log(err);
     }
     finally {
-        rl.close();
+        clean();
     }
-}
-
-function readLine(question) {
-    return new Promise((resolve, reject) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
-    });
 }
 
