@@ -4,7 +4,6 @@ const http = require("http");
 const https = require("https");
 const readline = require("readline");
 const child_process = require("child_process");
-const AdmZip = require('adm-zip');
 const rimraf = require("rimraf");
 const {Writable} = require("stream");
 
@@ -303,8 +302,6 @@ function unzipTo(source, dest){
         validateExitCode: true,
         shell: true,
     });
-    //const zip = new AdmZip(source);
-    //zip.extractAllTo(dest);
 }
 
 function pad(n, width, z) {

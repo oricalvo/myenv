@@ -1,12 +1,13 @@
 const path = require("path");
-const {loadApps, getApp, uninstallApp, installApp} = require("./core");
+const {loadApps, getApp, uninstallApp, installApp, folders} = require("./core");
 const {clean, readJSONFile, readdir, getStat} = require("./helpers");
 
 const entries = [
     {command: ["install", "i"], handler: install},
     {command: ["uninstall", "u"], handler: uninstall},
-    {command: ["version"], handler: version},
+    {command: ["version", "v"], handler: version},
     {command: ["list"], handler: list},
+    {command: ["available"], handler: available},
 ];
 
 main();
@@ -27,7 +28,7 @@ async function main() {
             }
 
             if(entry.command == command) {
-                entry.handler();
+                await entry.handler();
                 found = true;
                 break;
             }
@@ -45,11 +46,17 @@ async function main() {
     }
 }
 
+async function available() {
+    const apps = await loadApps();
+    for(const app of apps) {
+        console.log(app.name);
+    }
+}
+
 async function list() {
-    const binDir = path.resolve(__dirname, "../bin");
-    const files = await readdir(binDir);
+    const files = await readdir(folders.packages);
     for(const file of files) {
-        const stat = await getStat(path.resolve(binDir, file));
+        const stat = await getStat(path.resolve(folders.packages, file));
         if(stat.isDirectory()) {
             console.log(file);
         }
