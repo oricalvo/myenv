@@ -2,7 +2,8 @@
   "apps": [
     {
       "name": "npp",
-      "exe": "notepad++.exe"
+      "exe": "notepad++.exe",
+      "locals": ["/Program Files*/Notepad++/notepad++.exe"]
     },
     {
       "name": "conemu",
