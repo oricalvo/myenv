@@ -6,6 +6,7 @@ const readline = require("readline");
 const child_process = require("child_process");
 const rimraf = require("rimraf");
 const {Writable} = require("stream");
+const nativeGlob = require("glob");
 
 const mutableStdout = new Writable({
     write: function(chunk, encoding, callback) {
@@ -196,6 +197,7 @@ const readFile = promisifyNodeFn1(fs.readFile);
 const unlink = promisifyNodeFn1(fs.unlink);
 const readdir = promisifyNodeFn1(fs.readdir);
 const getStat = promisifyNodeFn1(fs.stat);
+const glob = promisifyNodeFn1(nativeGlob);
 
 function writeFile(path, data, enc) {
     return fs["writeFileAsync"](path, data, enc);
@@ -373,4 +375,5 @@ module.exports = {
     readdir,
     getStat,
     exec,
+    glob,
 };

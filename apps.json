@@ -36,6 +36,12 @@
     {
       "name": "colorpic",
       "exe": "ColorPic"
+    },
+    {
+      "name": "webstorm",
+      "locals": ["/Program Files*/JetBrains/WebStorm*/bin/WebStorm64.exe"],
+      "exe": "webstorm64",
+      "appendCurrentDirectory": true
     }
   ],
   "packages": [

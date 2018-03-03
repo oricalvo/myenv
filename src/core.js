@@ -111,11 +111,12 @@ async function uninstallApp(app){
     await deleteDirectory(app.dir);
 }
 
-async function run(app) {
-    console.log(`Running ${app.exe}`);
+async function runApp(app, overrideExe) {
+    const exe = !!overrideExe ? overrideExe : app.exe;
+    console.log(`Running ${exe}`);
 
-    const args = process.argv.slice(3);
-    const child = await spawn(app.exe, args, {
+    const args = app.appendCurrentDirectory ? [process.cwd()] : process.argv.slice(3);
+    const child = await spawn(exe, args, {
         stdio: app.validateExitCode ? "inherit" : "ignore",
         detached: !app.validateExitCode,
     });
@@ -130,4 +131,5 @@ module.exports = {
     installApp,
     uninstallApp,
     folders,
+    runApp,
 };
