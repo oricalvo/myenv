@@ -76,7 +76,7 @@ async function installAndRun(app){
         }
     }
 
-    await run(app);
+    await runApp(app);
 }
 
 async function isInstalled(app) {
