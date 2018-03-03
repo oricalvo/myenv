@@ -1,3 +1,3 @@
-@echo off
+REM @echo off
 
-CALL chrome http://localhost:%1 &
+chrome.cmd http://localhost:%1
