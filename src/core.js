@@ -1,5 +1,9 @@
 const uuid = require("uuid/v1");
 const path = require("path");
+const nativeGlob = require("glob");
+const {glob} = require("./helpers");
+const {ValidationError} = require("./errors");
+
 const {
     downloadTo,
     directoryExists,
@@ -32,7 +36,7 @@ function loadRegistry(){
 function getApp(registry, appName){
     const app = registry.apps.find(app => app.name == appName);
     if(!app){
-        throw new Error("App with name " + appName + " was not found");
+        throw new ValidationError("App \"" + appName + "\" was not found");
     }
 
     const dir = app.package ? path.resolve(folders.packages, app.package) : path.resolve(folders.packages, app.name);
@@ -103,7 +107,7 @@ async function installApp(app) {
     console.log("Extracting package to " + app.dir);
     await unzipTo(temp, app.dir);
 
-    await deleteFile(temp);
+    //await deleteFile(temp);
 }
 
 async function uninstallApp(app){
@@ -112,7 +116,17 @@ async function uninstallApp(app){
 }
 
 async function runApp(app, overrideExe) {
-    const exe = !!overrideExe ? overrideExe : app.exe;
+    let exe = !!overrideExe ? overrideExe : app.exe;
+
+    if(nativeGlob.hasMagic(exe)){
+        const matches = await glob(exe);
+        if(!matches.length){
+            throw new ValidationError("Glob pattern \"" + exe + "\" does not match file");
+        }
+
+        exe = matches[0];
+    }
+
     console.log(`Running ${exe}`);
 
     const args = app.appendCurrentDirectory ? [process.cwd()] : process.argv.slice(3);

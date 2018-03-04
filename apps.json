@@ -39,6 +39,11 @@
       "exe": "ColorPic"
     },
     {
+      "name": "postman",
+      "exe": "app*/Postman.exe",
+      "locals": ["/Users/*/AppData/Local/Postman/app*/Postman.exe"]
+    },
+    {
       "name": "webstorm",
       "locals": ["/Program Files*/JetBrains/WebStorm*/bin/WebStorm64.exe"],
       "exe": "webstorm64",

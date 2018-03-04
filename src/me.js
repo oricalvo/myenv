@@ -1,8 +1,23 @@
 const path = require("path");
-const {loadRegistry, getApp, uninstallApp, installApp, folders} = require("./core");
-const {clean, readJSONFile, readdir, getStat, spawn, exec, gitConfig, readPassword, readLine, httpRequest} = require("./helpers");
+const {loadRegistry, getApp, uninstallApp, installApp, folders, installAndRun, runApp} = require("./core");
+const {
+    clean,
+    readJSONFile,
+    readdir,
+    getStat,
+    spawn,
+    exec,
+    gitConfig,
+    readPassword,
+    readLine,
+    httpRequest,
+    glob
+} = require("./helpers");
 const url = require('url');
 const https = require("https");
+const {ValidationError} = require("./errors");
+const colors = require('colors');
+const {error, log} = require("./logger");
 
 const entries = [
     {command: ["install", "i"], handler: install},
@@ -13,6 +28,7 @@ const entries = [
     {command: ["update"], handler: update},
     {command: ["push"], handler: push},
     {command: ["repos"], handler: repos},
+    {command: ["run"], handler: run},
 ];
 
 main();
@@ -27,7 +43,7 @@ async function main() {
         let found = false;
         for(const entry of entries) {
             if(Array.isArray(entry.command) && entry.command.includes(command)) {
-                entry.handler();
+                await entry.handler();
                 found = true;
                 break;
             }
@@ -44,7 +60,12 @@ async function main() {
         }
     }
     catch(err) {
-        console.error(err);
+        if(err instanceof ValidationError){
+            error(err.message);
+        }
+        else {
+            error(err);
+        }
     }
     finally {
         clean();
@@ -226,4 +247,60 @@ function getRepos(options){
 
         request.end();
     });
+}
+
+async function run() {
+    const appName = process.argv[3];
+    if(!appName) {
+        throw new Error("App name parameter is missing");
+    }
+
+    const regsitry = await loadRegistry();
+    const app = getApp(regsitry, appName);
+
+    if(app.locals) {
+        const exePath = await resolveAppLocals(app.locals);
+        if(exePath) {
+            await runApp(app, exePath);
+            return;
+        }
+    }
+
+    await installAndRun(app);
+}
+
+async function resolveAppLocals(locals) {
+    let cwdChanged = false;
+    const cwd = process.cwd();
+
+    try {
+        const res = await exec("wmic logicaldisk get caption,drivetype", {shell: true});
+        const lines = res.split("\r\r\n").slice(1);
+        for (const line of lines) {
+            let [drive, type] = line.split(":");
+            drive = drive.trim();
+            type = type.trim();
+            if (type == 3) {
+                process.chdir(drive + ":");
+                cwdChanged = true;
+
+                for (const local of locals) {
+                    const matches = await glob(local);
+                    if (matches.length) {
+                        return matches[0];
+                    }
+                }
+            }
+        }
+    }
+    finally {
+        if(cwdChanged) {
+            process.chdir(cwd.substring(0,2));
+        }
+    }
+}
+
+async function fileExists(pattern) {
+    const matches = await glob(pattern);
+    return matches.length > 0;
 }
