@@ -126,7 +126,9 @@ async function update() {
 }
 
 async function push() {
-    const res = await exec("git status");
+    const res = await exec("git status", {
+        cwd: path.join(__dirname, "..")
+    });
     if(res.includes("nothing to commit")) {
         console.log("Nothing to push");
         return;
