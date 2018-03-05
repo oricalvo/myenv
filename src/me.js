@@ -126,8 +126,10 @@ async function update() {
 }
 
 async function push() {
+    const repoRootFolder = path.join(__dirname, "..");
+
     const res = await exec("git status", {
-        cwd: path.join(__dirname, "..")
+        cwd: repoRootFolder,
     });
     if(res.includes("nothing to commit")) {
         console.log("Nothing to push");
@@ -140,19 +142,19 @@ async function push() {
     });
 
     await spawn("git", ["add", "."], {
-        cwd: path.resolve(__dirname, ".."),
+        cwd: repoRootFolder,
         stdio: "inherit",
         validateExitCode: true,
     });
 
     await spawn("git", ["commit", "-m", `Version ${version}`], {
-        cwd: path.resolve(__dirname, ".."),
+        cwd: repoRootFolder,
         stdio: "inherit",
         validateExitCode: true,
     });
 
     await spawn("git", ["push"], {
-        cwd: path.resolve(__dirname, ".."),
+        cwd: repoRootFolder,
         stdio: "inherit",
         validateExitCode: true,
     });
