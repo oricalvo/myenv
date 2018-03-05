@@ -268,6 +268,11 @@ async function run() {
             await runApp(app, exePath);
             return;
         }
+
+        if(app.noPackage) {
+            error(`Application "${appName}" was not found locally and is not associated with a remote package`);
+            return;
+        }
     }
 
     await installAndRun(app);

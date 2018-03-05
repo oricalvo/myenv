@@ -49,7 +49,8 @@ function getApp(registry, appName){
         ...app,
         url,
         dir,
-        exe: path.resolve(dir, app.exe),
+        exe: app.exe ? path.resolve(dir, app.exe) : null,
+        noPackage: app.noPackage,
     };
 }
 
@@ -130,7 +131,7 @@ async function runApp(app, overrideExe) {
     console.log(`Running ${exe}`);
 
     const args = app.appendCurrentDirectory ? [process.cwd()] : process.argv.slice(4);
-    
+
     const child = await spawn(exe, args, {
         stdio: app.validateExitCode ? "inherit" : "ignore",
         detached: !app.validateExitCode,

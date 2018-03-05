@@ -53,6 +53,11 @@
       "name": "meld",
       "exe": "Meld.exe",
       "locals": ["/Program Files/Meld/Meld.exe"]
+    },
+    {
+      "name": "vs",
+      "locals": ["/Program Files*/Microsoft Visual Studio2/*/*/Common7/IDE/devenv.exe"],
+      "noPackage": true
     }
   ],
   "packages": [
