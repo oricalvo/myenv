@@ -1,3 +1,3 @@
-REM @echo off
+@echo off
 
 chrome.cmd http://localhost:%1
