@@ -130,9 +130,7 @@ async function runApp(app, overrideExe) {
     console.log(`Running ${exe}`);
 
     const args = app.appendCurrentDirectory ? [process.cwd()] : process.argv.slice(4);
-
-    console.log("args", args);
-
+    
     const child = await spawn(exe, args, {
         stdio: app.validateExitCode ? "inherit" : "ignore",
         detached: !app.validateExitCode,

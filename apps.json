@@ -48,6 +48,11 @@
       "locals": ["/Program Files*/JetBrains/WebStorm*/bin/WebStorm64.exe"],
       "exe": "webstorm64",
       "appendCurrentDirectory": true
+    },
+    {
+      "name": "meld",
+      "exe": "Meld.exe",
+      "locals": ["/Program Files/Meld/Meld.exe"]
     }
   ],
   "packages": [
