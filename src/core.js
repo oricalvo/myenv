@@ -128,16 +128,31 @@ async function runApp(app, overrideExe) {
         exe = matches[0];
     }
 
-    console.log(`Running ${exe}`);
-
     const args = app.appendCurrentDirectory ? [process.cwd()] : process.argv.slice(4);
 
-    const child = await spawn(exe, args, {
-        stdio: app.validateExitCode ? "inherit" : "ignore",
-        detached: !app.validateExitCode,
-    });
+    console.log(`Running ${exe} ${args}`);
 
-    child.unref();
+    if(app.guiApp) {
+        const child = await spawn(exe, args, {
+            stdio: "ignore",
+            detached: true,
+        });
+
+        child.unref();
+    }
+    else {
+        const child = await spawn(exe, args, {
+            stdio: "inherit",
+        });
+    }
+
+
+    // const child = await spawn(exe, args, {
+    //     stdio: app.validateExitCode ? "inherit" : "ignore",
+    //     detached: !app.validateExitCode,
+    // });
+
+    //child.unref();
 }
 
 module.exports = {
