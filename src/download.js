@@ -2,7 +2,7 @@ const path = require("path");
 const request = require("request");
 const fs = require("fs");
 const readline = require("readline");
-const {downloadTo} = require("../../src/helpers");
+const {downloadTo} = require("./helpers");
 
 main();
 
