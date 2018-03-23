@@ -232,6 +232,28 @@ function replaceExt(filePath, ext) {
     return res;
 }
 
+function promisify(func) {
+    return function(arg) {
+        const me = this;
+        const args = Array.from(arguments);
+
+        return new Promise((resolve, reject)=> {
+            function callback(err, res) {
+                if(err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(res);
+            }
+
+            args.push(callback);
+
+            func.apply(me, args);
+        });
+    }
+}
+
 function promisifyNodeFn1(func) {
     return function(arg) {
         return new Promise((resolve, reject)=> {
@@ -376,4 +398,5 @@ module.exports = {
     getStat,
     exec,
     glob,
+    promisify,
 };

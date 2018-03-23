@@ -3,31 +3,38 @@
     {
       "name": "npp",
       "exe": "notepad++.exe",
-      "locals": ["/Program Files*/Notepad++/notepad++.exe"]
+      "locals": ["/Program Files*/Notepad++/notepad++.exe"],
+      "guiApp": true
     },
     {
       "name": "conemu",
-      "exe": "ConEmu64.exe"
+      "exe": "ConEmu64.exe",
+      "guiApp": true
     },
     {
       "name": "procexp",
-      "exe": "procexp64"
+      "exe": "procexp64",
+      "guiApp": true
     },
     {
       "name": "vscode",
-      "exe": "code"
+      "exe": "code",
+      "guiApp": true
     },
     {
       "name": "fiddler",
-      "exe": "fiddler"
+      "exe": "fiddler",
+      "guiApp": true
     },
     {
       "name": "github",
-      "exe": "GitHubDesktop"
+      "exe": "GitHubDesktop",
+      "guiApp": true
     },
     {
       "name": "textpad",
-      "exe": "TextPad"
+      "exe": "TextPad",
+      "guiApp": true
     },
     {
       "name": "pskill",
@@ -35,29 +42,39 @@
       "exe": "pskill"
     },
     {
+      "name": "pslist",
+      "package": "pstools",
+      "exe": "pslist"
+    },
+    {
       "name": "colorpic",
-      "exe": "ColorPic"
+      "exe": "ColorPic",
+      "guiApp": true
     },
     {
       "name": "postman",
       "exe": "app*/Postman.exe",
-      "locals": ["/Users/*/AppData/Local/Postman/app*/Postman.exe"]
+      "locals": ["/Users/*/AppData/Local/Postman/app*/Postman.exe"],
+      "guiApp": true
     },
     {
       "name": "webstorm",
       "locals": ["/Program Files*/JetBrains/WebStorm*/bin/WebStorm64.exe"],
       "exe": "webstorm64",
-      "appendCurrentDirectory": true
+      "appendCurrentDirectory": true,
+      "guiApp": true
     },
     {
       "name": "meld",
       "exe": "Meld.exe",
-      "locals": ["/Program Files/Meld/Meld.exe"]
+      "locals": ["/Program Files/Meld/Meld.exe"],
+      "guiApp": true
     },
     {
       "name": "vs",
       "locals": ["/Program Files*/Microsoft Visual Studio/*/*/Common7/IDE/devenv.exe"],
-      "noPackage": true
+      "noPackage": true,
+      "guiApp": true
     }
   ],
   "packages": [
