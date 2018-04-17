@@ -9,7 +9,8 @@
     {
       "name": "conemu",
       "exe": "ConEmu64.exe",
-      "guiApp": true
+      "guiApp": true,
+      "locals": ["/Program Files/ConEmu/ConEmu64.exe"]
     },
     {
       "name": "procexp",
@@ -34,7 +35,8 @@
     {
       "name": "textpad",
       "exe": "TextPad",
-      "guiApp": true
+      "guiApp": true,
+      "locals": ["/Program Files/TextPad 8/TextPad.exe"]
     },
     {
       "name": "pskill",

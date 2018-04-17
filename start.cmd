@@ -1,4 +1,4 @@
 @echo off
 
-cmd.exe /K env.cmd
+cmd.exe /K %~dp0/env.cmd
 
