@@ -1,14 +1,12 @@
 const readline = require('readline');
 const {httpRequest, clean, gitConfig, readPassword, readLine} = require("./helpers");
+const path = require("path");
 
 main();
 
 async function main() {
     try {
-        const repoName = process.argv[2];
-        if(!repoName){
-            throw new Error("Missing repo parameter");
-        }
+        const repoName = process.argv[2] || path.basename(process.cwd());
 
         const userName = await gitConfig("user.name");
         if(!userName){
@@ -31,10 +29,10 @@ async function main() {
             },
         };
 
+        process.stdout.write(`Creating repo ${repoName} ... `);
         const res = await httpRequest(options, {
             name: repoName,
         });
-
         console.log("Done");
     }
     catch(err){
