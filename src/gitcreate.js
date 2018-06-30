@@ -1,5 +1,5 @@
 const readline = require('readline');
-const {httpRequest, clean, gitConfig, readPassword, readLine} = require("./helpers");
+const {httpRequest, clean, gitConfig, readPassword, reportError} = require("./helpers");
 const path = require("path");
 
 main();
@@ -7,10 +7,11 @@ main();
 async function main() {
     try {
         const repoName = process.argv[2] || path.basename(process.cwd());
+        console.log("Repo name: " + repoName);
 
         const userName = await gitConfig("user.name");
         if(!userName){
-            throw new Error("Unable to determine git user name. Please ensure \"git config user.name\" returns your user name");
+            throw new CLIError("Unable to determine git user name. Please ensure \"git config user.name\" returns your user name");
         }
         console.log("User name: " + userName);
 
@@ -36,7 +37,7 @@ async function main() {
         console.log("Done");
     }
     catch(err){
-        console.log(err);
+        reportError(err);
     }
     finally {
         clean();
