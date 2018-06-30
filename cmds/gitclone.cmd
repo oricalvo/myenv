@@ -1,1 +1,3 @@
-git clone https://github.com/oricalvo/%1 %2
+@echo off
+
+node %~dp0../src/gitclone.js %1

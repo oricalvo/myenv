@@ -7,6 +7,7 @@ const child_process = require("child_process");
 const rimraf = require("rimraf");
 const {Writable} = require("stream");
 const nativeGlob = require("glob");
+const {error, log} = require("./logger");
 
 const mutableStdout = new Writable({
     write: function(chunk, encoding, callback) {
@@ -376,6 +377,21 @@ function exec(command, options) {
     });
 }
 
+class CLIError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
+function reportError(err) {
+    if(err instanceof CLIError) {
+        error(err.message);
+        return;
+    }
+
+    log(err);
+}
+
 module.exports = {
     downloadTo,
     spawn,
@@ -399,4 +415,6 @@ module.exports = {
     exec,
     glob,
     promisify,
+    CLIError,
+    reportError,
 };

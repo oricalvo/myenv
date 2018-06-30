@@ -1,6 +1,8 @@
+const colors = require("colors/safe");
+
 function error(message){
     if(typeof message == "string") {
-        console.log(message.red);
+        console.log(colors.red(message));
         return;
     }
 
@@ -13,7 +15,7 @@ function log(message){
 
 function important(message){
     if(typeof message == "string") {
-        console.log(message.cyan);
+        console.log(colors.cyan(message));
         return;
     }
 
